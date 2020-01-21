@@ -601,6 +601,5 @@ rezaAccion.doIt = function(s) {
 
 
 // === Arranque ------------------------------------------------------
-//ctrl.lugares.ponInicio( locPlaya );
-ctrl.lugares.ponInicio( locSalida );
+ctrl.lugares.ponInicio( locPlaya );
 ctrl.personas.cambiaJugador( jugador );
