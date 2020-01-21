@@ -1,7 +1,5 @@
-// montecristo.js
-// el conde de montecristo
+// Montecristo (c) 2013, 2020 Baltasar MIT License <baltasarq@gmail>
 
-// Intro
 ctrl.ponTitulo( "La isla de Montecristo" );
 ctrl.ponIntro( "Despu&eacute;s de huir del castillo de <b>If</b>, \
                     arribas a la <i>Isla \
@@ -10,7 +8,8 @@ ctrl.ponIntro( "Despu&eacute;s de huir del castillo de <b>If</b>, \
 );
 ctrl.ponImg( "res/islaMontecristo.jpg" );
 ctrl.ponAutor( "baltasarq@gmail.com" );
-ctrl.ponVersion( "201310" );
+ctrl.ponVersion( "2 202001" );
+
 
 // === Playa ---------------------------------------------------------
 var locPlaya = ctrl.lugares.creaLoc( "Costa de Montecristo",
@@ -40,19 +39,19 @@ locPlaya.preSwim = function() {
 		    No es el momento de nadar.";
 }
 
-var objGuijarros = ctrl.creaObj( "guijarros",
+const objGuijarros = ctrl.creaObj( "guijarros",
      [ "guijarro", "piedras", "piedra" ],
      "Pequeños guijarros se ven arrastrados por la fuerza del agua.",
      locPlaya, Ent.Escenario
 );
 
-var objMar = ctrl.creaObj( "mar",
+const objMar = ctrl.creaObj( "mar",
      [ "agua" ],
      "El mar bate la costa con fuerza.",
      locPlaya, Ent.Escenario
 );
 
-var objCueva = ctrl.creaObj( "cueva",
+const objCueva = ctrl.creaObj( "cueva",
      [ "gruta", "caverna" ],
      "Parece una invitación a adentrarse en la oscuridad.",
      locPlaya, Ent.Escenario
@@ -63,7 +62,7 @@ objCueva.preEnter = function() {
      return "Te has adentrado en la cueva...";
 }
 
-var objRocas = ctrl.creaObj( "roca",
+const objRocas = ctrl.creaObj( "roca",
      [ "rocas", "peñascos", "peñasco", "cantiles",
           "acantilados", "cantil", "acantilado", "cima", "cimas" ],
      "Las rocas alcanzan alturas imposibles.",
@@ -72,7 +71,7 @@ var objRocas = ctrl.creaObj( "roca",
 
 objRocas.ponAlcanzable( false );
 
-var objBote = ctrl.creaObj( "bote",
+const objBote = ctrl.creaObj( "bote",
      [ "barca", "esquife" ],
      "La embarcación en la que arribaste a Montecristo, varada en \
       la playa. En su interior hay multitud de objetos de distinto tipo, \
@@ -81,13 +80,24 @@ var objBote = ctrl.creaObj( "bote",
 );
 objBote.ponContenedor();
 
-var objBotella = ctrl.creaObj( "botella",
+const objBotella = ctrl.creaObj( "botella",
      [ "agua", "recipiente" ],
      "Una botella llena de agua.",
      ctrl.lugares.limbo, Ent.Portable
 );
 
-var objBotellaVacia = ctrl.creaObj( "botella",
+objBotella.preExamine = function() {
+    var toret = this.desc;
+    
+    if ( ctrl.places.getCurrentLoc().has( pnjNaufrago ) ) {
+        toret += " El náufrago la \
+                   ${necesita más que tú, dar botella a naufrago}.";
+    }
+    
+    return toret;
+};
+
+const objBotellaVacia = ctrl.creaObj( "botella",
      [ "recipiente" ],
      "Una botella vacía.",
      ctrl.lugares.limbo, Ent.Portable
@@ -146,8 +156,9 @@ objBote.preSearch = function() {
      return "No encuentras nada m&aacute;s.";
 }
 
+
 // === Cantiles ------------------------------------------------------
-var locCantiles = ctrl.lugares.creaLoc( "Cantiles",
+const locCantiles = ctrl.lugares.creaLoc( "Cantiles",
                     [ "cantiles", "acantilados" ],
                     "Los cantiles de grandes ${rocas, ex rocas} \
                      terminan en este punto con la breve \
@@ -160,14 +171,14 @@ locCantiles.pic = "res/acantilados.jpg";
 locCantiles.objs.push( objRocas );
 locCantiles.objs.push( objMar );
 
-var objPlaya = ctrl.creaObj( "playa", [ "playa", "cala", "caleta" ],
+const objPlaya = ctrl.creaObj( "playa", [ "playa", "cala", "caleta" ],
                     "La playa se encuentra el ${oeste, oeste} de aquí.",
                     locCantiles, Ent.Escenario
 );
 
 locCantiles.ponSalidaBi( "oeste", locPlaya );
 
-var pnjNaufrago = ctrl.personas.creaPersona( "naufrago",
+const pnjNaufrago = ctrl.personas.creaPersona( "naufrago",
                     [ "hombre", "persona", "marino" ],
                     "Tiene pinta de llevar mucho tiempo aqu&iacute;.",
                     locCantiles
@@ -215,7 +226,7 @@ pnjNaufrago.preTalk = function() {
 }
 
 // === Oscura cueva --------------------------------------------------
-var locCueva = ctrl.lugares.creaLoc( "Cueva oscura",
+const locCueva = ctrl.lugares.creaLoc( "Cueva oscura",
                     [ "cueva", "gruta" ],
                     "Una oscura cueva, totalmente desnuda, forma una \
                     reducida circunferencia en derredor de un paso \
@@ -225,8 +236,9 @@ var locCueva = ctrl.lugares.creaLoc( "Cueva oscura",
 
 locCueva.pic = "res/cuevaOscura.jpg";
 
+
 // === Antesala ------------------------------------------------------
-var locAntesala = ctrl.lugares.creaLoc( "Antesala",
+const locAntesala = ctrl.lugares.creaLoc( "Antesala",
                     [ "cueva", "gruta", "antesala" ],
                     "La cueva empieza al ${norte, norte} para adentrarse \
                      hacia el ${este,este}. \
@@ -241,14 +253,15 @@ locAntesala.preExit = function() {
 	return "";
 }
 
-var objEstalactitas = ctrl.creaObj( "estalactitas",
+const objEstalactitas = ctrl.creaObj( "estalactitas",
      [ "techo", "techos", "estalactita", "alto", "alturas", "altos" ],
      "Docenas de estalactitas cuelgan del techo, puntiagudas.",
      locAntesala, Ent.Escenario
 );
 
+
 // === Pasaje --------------------------------------------------------
-var locPasaje = ctrl.lugares.creaLoc( "Pasaje",
+const locPasaje = ctrl.lugares.creaLoc( "Pasaje",
                     [ "cueva", "gruta", "pasaje", "pasillo", "camino" ],
                     "Un estrecho pasillo recorre un camino de unos cincuenta \
                      metros, de ${este,este} a ${oeste,oeste}."
@@ -264,7 +277,7 @@ locPasaje.preLook = function() {
      } else {
           toret += " La ${roca plana, ex roca} \
                      aparece ahora desgajada, \
-                     dejando el paso expedito al ${sur,sur}.";
+                     abriendo un pasaje al ${sur,sur}.";
      }
 
 
@@ -274,15 +287,28 @@ locPasaje.preLook = function() {
 locPasaje.pic = "res/pasaje.jpg";
 locPasaje.ponSalidaBi( "oeste", locAntesala );
 
-var objRocaPlana = ctrl.creaObj( "roca plana",
-  			[ "roca", "puerta", "ojo", "cerradura" ],
-                             "Descansa contra la pared sur. \
-                              Te das cuenta de que tiene un ojo de \
-                              cerradura, parece como una puerta a la \
-                              que le falta la llave...",
-                             locPasaje, Ent.Escenario
+const objRocaPlana = ctrl.creaObj(
+    "roca plana",
+    [ "roca", "puerta", "ojo", "cerradura" ],
+    "Descansa contra la pared sur. \
+    Te das cuenta de que tiene un ojo de \
+    cerradura, parece como una puerta a la \
+    que le falta la llave...",
+    locPasaje,
+    Ent.Escenario
 );
 objRocaPlana.abierta = false;
+
+objRocaPlana.preExamine = function() {
+    var toret = this.desc;
+    
+    if ( ctrl.personas.getPlayer().has( objLlave ) ) {
+        toret += " Por cierto, ahora tienes una llave \
+                   que podrías ${probar, abre roca}.";
+    }
+    
+    return toret;
+};
 
 objRocaPlana.preOpen = function() {
      var toret = "";
@@ -309,7 +335,7 @@ objRocaPlana.preOpen = function() {
      return toret;
 };
 
-var objLlave = ctrl.creaObj( "llave", [ "llave" ],
+const objLlave = ctrl.creaObj( "llave", [ "llave" ],
                              "Ligeramente oxidada.",
                              locCueva, Obj.Portable
 );
@@ -327,8 +353,9 @@ objLlave.preDrop = function() {
      return toret;
 }
 
+
 // === Fondo de saco ---------------------------------------------------
-var locFondo = ctrl.lugares.creaLoc( "Fondo de saco",
+const locFondo = ctrl.lugares.creaLoc( "Fondo de saco",
                     [ "cueva", "gruta", "fondo", "saco" ],
                     "La cueva termina en este punto, pareciendo \
                      estirarse docenas de metros antes de cerrarse en \
@@ -339,14 +366,23 @@ var locFondo = ctrl.lugares.creaLoc( "Fondo de saco",
 locFondo.pic = "res/cuevaInundada.jpg";
 locFondo.inundada = true;
 
-var objAgua = ctrl.creaObj( "agua", [ "agua", "inundación", "inundacion" ],
-                             "Todo está lleno de agua.",
-                             locFondo, Ent.Escenario
+const objAgua = ctrl.creaObj(
+    "agua",
+    [ "agua", "inundación", "inundacion" ],
+    "Todo está lleno de agua.",
+    locFondo,
+    Ent.Escenario
 );
 
-var objRocaRedonda = ctrl.creaObj( "roca redonda", [ "roca", "piedra", "redonda" ],
-                             "Descansa contra la pared norte.",
-                             locFondo, Ent.Escenario
+const objRocaRedonda = ctrl.creaObj(
+    "roca redonda",
+    [ "roca", "piedra", "redonda" ],
+    "Descansa contra la pared norte. \
+    Es una roca relativamente pequeña, \
+    y no parece que esté muy fijada al suelo o la pared. \
+    ${Podrías tratar de moverla, empuja roca}.",
+    locFondo,
+    Ent.Escenario
 );
 
 objRocaRedonda.prePush = function() {
@@ -384,14 +420,106 @@ locFondo.preLook = function() {
 
 locFondo.ponSalidaBi( "oeste", locPasaje );
 
-// === Salida ---------------------------------------------------------
-var locSalida = ctrl.lugares.creaLoc( "Salida de la cueva",
+
+// === Sala del tesoro -----------------------------------------------
+const locSalaTesoro = ctrl.lugares.creaLoc( "Sala del tesoro",
                     [ "cueva", "gruta", "salida" ],
-                    "La cueva se estrecha a la altura de un hombre \
-                     agachado a medida que baja hacia una playa al \
-                     ${oeste, oeste}. Al ${este,este} se aprecia un \
-                     tenue resplandor."
+                    "Una gran sala, bastante limpia y desnuda, \
+                     y cortada en apariencia a la medida \
+                     de una estancia normal, se extiende hacia el norte, \
+                     ahora bloquedado, y hacia el ${oeste, oeste}."
 );
+
+locSalaTesoro.pic = "res/salaTesoro.jpg";
+
+locSalaTesoro.preLook = function() {
+     var toret = locSalaTesoro.desc;
+
+     if ( locSalaTesoro.devSalida( "norte" ) != null ) {
+          locSalaTesoro.ponSalida( "norte", null );
+
+          toret +=
+               "<p>La puerta se desliza de nuevo con un quejumbroso sonido, \
+                al atravesar su umbral. Ya no se puede pasar por ahí...";
+     }
+
+     return toret;
+}
+
+const objCofrecillo = ctrl.creaObj(
+    "cofrecillo",
+    [ "cofre", "tesoro" ],
+    "¡Es el cofre del tesoro del que te habló el abate! \
+     Rebosa de piedras preciosas.",
+    locSalaTesoro,
+    Obj.Portable
+);
+
+
+// === Salida ---------------------------------------------------------
+const locSalida = ctrl.lugares.creaLoc( "Salida de la cueva",
+                    [ "cueva", "gruta", "salida" ],
+                    "La cueva se estrecha a la altura de una persona \
+                     agachado a medida que baja hacia una playa al \
+                     ${oeste, oeste}. El ${agua del mar, ex agua} \
+                     entra y sale por ${el hueco, ex hueco}.  \
+                     Al ${este,este} se aprecia un tenue resplandor." );
+
+locSalida.ponSalidaBi( "este", locSalaTesoro );
+
+const objHueco = ctrl.creaObj(
+    "hueco",
+    [ "entrada" ],
+    "El hueco que deja la roca prácticamente está a la altura del \
+     ${agua, ex agua}.",
+    locSalida,
+    Ent.Scenery );
+
+objHueco.canSwim = false;
+
+objHueco.preExamine = function() {
+    var toret = this.desc;
+    
+    if ( this.canSwim ) {
+        toret += " Te das cuenta ahora de que podrías ${nadar, nada}, \
+                   pasando por debajo de la roca \
+                   en el hueco de entrada del mar.";
+    }
+    
+    return toret;
+};
+
+const objMarSalida = ctrl.creaObj(
+    "agua",
+    [ "mar" ],
+    "Agua salada y cristalina. Puedes ver perfectamente el fondo, \
+     apenas cubriendo tus pies en los puntos próximos a ti, mientras \
+     va aumentando la profundidad a medida que avanzas la vista \
+     hacia la ${entrada del mar, ex hueco}.",
+    locSalida,
+    Ent.Scenery );
+
+objMarSalida.preExamine = function() {
+    var toret = this.desc;
+    
+    objHueco.canSwim = true;
+    
+    return toret;
+};
+
+objMarSalida.preAttack = function() {
+    const player = ctrl.personas.getPlayer();
+    var toret = "Pero... ¡si no llevas nada en las manos!";
+    
+    if ( player.objs.length > 0 ) {
+        player.objs.slice().forEach( obj => obj.moveTo( locSalida ) );
+        
+        toret = "Has dejado todo lo que llevabas en el suelo.";
+        ctrl.places.doDesc();
+    }
+    
+    return toret;
+};
 
 locSalida.pic = "res/salidaCuevaInundada.jpg";
 
@@ -416,24 +544,23 @@ locSalida.preSwim = function(s) {
      if ( player.objs.length > 1 ) {
           toret += "Tratas de introducirte por el agujero, pero por \
                    m&aacute;s que lo intentas, eres incapaz de nadar \
-                   con las manos llenas de cosas.";
+                   con las ${manos llenas de cosas, golpea mar}.";
      } else {
           toret += "Te introduces por el agujero, braceando \
                     desesperadamente, hasta que sales por el otro lado. \
                     Con un eufórico sentimiento de victoria, emerges, y \
                     chapoteas hasta la playa. ¡Has escapado de la isla!<p>";
 
-          if ( player.objs.indexOf( objTesoro ) > -1 ) {
+          if ( player.objs.indexOf( objCofrecillo ) > -1 ) {
                toret += "Aprietas el cofre, y la inmensa fortuna en su \
                          interior, contra tu pecho.<p>Ahora puede \
                          comenzar tu venganza.";
           } else {
-               toret += "... Es una verdadera lástima que olvidaras \
+               toret += "...es una verdadera lástima que olvidaras \
                         coger el cofre del tesoro en el último momento.";
           }
 
-          document.getElementById( "dvObjects" ).style.display = "none";
-          document.getElementById( "dvActions" ).style.display = "none";
+          document.getElementById( "dvCmds" ).style.display = "none";
           ctrl.terminaJuego( toret, "res/mar.jpg" );
           toret = "";
 
@@ -442,42 +569,9 @@ locSalida.preSwim = function(s) {
      return toret;
 };
 
-// === Sala del tesoro -----------------------------------------------
-var locSalaTesoro = ctrl.lugares.creaLoc( "Sala del tesoro",
-                    [ "cueva", "gruta", "salida" ],
-                    "Una gran sala, bastante limpia y desnuda, \
-                     y cortada en apariencia a la medida \
-                     de una estancia normal, se extiende hacia el norte, \
-                     ahora bloquedado, y hacia el ${oeste, oeste}."
-);
-
-locSalaTesoro.pic = "res/salaTesoro.jpg";
-
-locSalaTesoro.preLook = function() {
-     var toret = locSalaTesoro.desc;
-
-     if ( locSalaTesoro.devSalida( "norte" ) != null ) {
-          locSalaTesoro.ponSalida( "norte", null );
-
-          toret +=
-               "<p>La puerta se desliza de nuevo con un quejumbroso sonido, \
-                al atravesar su umbral. Ya no se puede pasar por ahí...";
-     }
-
-     return toret;
-}
-
-var objTesoro = ctrl.creaObj( "cofrecillo del tesoro",
-                             [ "cofrecillo", "cofre", "tesoro" ],
-                             "Rebosa de piedras preciosas",
-                             locSalaTesoro, Obj.Portable
-);
-
-
-locSalaTesoro.ponSalidaBi( "oeste", locSalida );
 
 // === Jugador -------------------------------------------------------
-var jugador = ctrl.personas.creaPersona( "Edmundo Dant&eacute;s",
+const jugador = ctrl.personas.creaPersona( "Edmundo Dant&eacute;s",
                     [ "jugador" ],
                     "Hu&iacute;do del castillo de If, tienes una pinta \
                     deplorable en este momento.",
@@ -491,8 +585,9 @@ objBufanda = ctrl.creaObj( "bufanda",
 );
 objBufanda.ponPuesto();
 
+
 // Nuevas acciones -----------------------------------------------------
-var rezaAccion = actions.crea( "reza",
+const rezaAccion = actions.crea( "reza",
 	[ "reza", "rezar", "rezo" ]
 );
 
@@ -504,6 +599,8 @@ rezaAccion.doIt = function(s) {
              sabes que ya est&aacute;s listo.";
 }
 
+
 // === Arranque ------------------------------------------------------
-ctrl.lugares.ponInicio( locPlaya );
+//ctrl.lugares.ponInicio( locPlaya );
+ctrl.lugares.ponInicio( locSalida );
 ctrl.personas.cambiaJugador( jugador );
