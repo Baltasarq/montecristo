@@ -560,6 +560,10 @@ locSalida.preSwim = function(s) {
                         coger el cofre del tesoro en el último momento.";
           }
 
+          toret += "<p align='right'>\
+                    <a href='javascript: location.reload();'>\
+                    <i>Comenzar de nuevo</i></a>.";
+          
           document.getElementById( "dvCmds" ).style.display = "none";
           ctrl.terminaJuego( toret, "res/mar.jpg" );
           toret = "";
