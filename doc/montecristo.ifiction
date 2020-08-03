@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ifindex version="1.0" xmlns="http://babel.ifarchive.org/protocol/iFiction/">
+    <story>
+        <identification>
+            <ifid>6866d63d-0cf4-4eb9-86af-a693b7e22ea7</ifid>
+            <format>html</format>
+        </identification>
+        <bibliographic>
+            <title>La isla de Montecristo</title>
+            <author>Baltasar</author>
+            <language>ES</language>
+            <headline>La búsqueda del tesoro.</headline>
+            <genre>mistery</genre>
+            <forgiveness>polite</forgiveness>
+            <description>Después de huir del castillo de If, arribas a la Isla de Montecristo, para tratar de encontrar el tesoro del que el abate te confesó su existencia y paradero.</description>
+        </bibliographic>
+        <contacts>
+            <authoremail>baltasarq@gmail.com</authoremail>
+            <url>http://caad.es/baltasarq</url>
+        </contacts>
+        <release>
+            <version>2</version>
+            <releasedate>2020/01/20</releasedate>
+        </release>
+        <colophon>
+            <generator>Babble</generator>
+            <originated>2020/01/20</originated>
+        </colophon>
+    </story>
+</ifindex>
