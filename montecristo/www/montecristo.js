@@ -20,13 +20,13 @@ locPlaya.ini = function() {
 };
 
 locPlaya.preEnter = function() {
-	ctrl.goto( locAntesala );
-	return "";
+    ctrl.goto( locAntesala );
+    return "";
 };
 
 locPlaya.preSwim = function() {
-	return "Acabas de llegar, para buscar el tesoro de Montecristo. \
-		    No es el momento de nadar.";
+    return "Acabas de llegar, para buscar el tesoro de Montecristo. \
+            No es el momento de nadar.";
 }
 
 const objGuijarros = ctrl.creaObj( "guijarros",
@@ -91,29 +91,29 @@ objBotella.preGive = function() {
      let toret = "";
 
      if ( parser.sentencia.obj2 == pnjNaufrago ) {
-		ctrl.print( "Le das la botella al n&aacute;ufrago, quien la apura \
-				 de un solo trago." );
+        ctrl.print( "Le das la botella al n&aacute;ufrago, quien la apura \
+                 de un solo trago." );
 
         this.moveTo( ctrl.lugares.limbo );
         objBotellaVacia.moveTo( pnjNaufrago );
-		pnjNaufrago.status = 2;
+        pnjNaufrago.status = 2;
 
-		pnjNaufrago.di( "Gracias... gracias, mi buen amigo." );
-		ctrl.print( "Goterones de agua resbalan por sus luengas barbas..." );
+        pnjNaufrago.di( "Gracias... gracias, mi buen amigo." );
+        ctrl.print( "Goterones de agua resbalan por sus luengas barbas..." );
 
-		pnjNaufrago.di( "Mi nombre es Valerio. Naufragué aquí hace un mes, \
-					  y ya había perdido toda esperanza." );
-		pnjNaufrago.desc = "Saborea las gotas que le han quedado \
+        pnjNaufrago.di( "Mi nombre es Valerio. Naufragué aquí hace un mes, \
+                      y ya había perdido toda esperanza." );
+        pnjNaufrago.desc = "Saborea las gotas que le han quedado \
                             en las comisuras de los labios... y hay \
-							una expresión de alivio en sus ojos...";
-		pnjNaufrago.syn.push( "valerio" );
+                            una expresión de alivio en sus ojos...";
+        pnjNaufrago.syn.push( "valerio" );
         toret = "Quiz&aacute;s ahora, que ya est&aacute; tranquilo, \
                    sea un buen momento para hacerle unas preguntas.";
-	} else {
+    } else {
           toret = dropAction.exe( parser.sentencia );
     }
 
-	return toret;
+    return toret;
 }
 
 const objBote = ctrl.creaObj( "bote",
@@ -131,7 +131,7 @@ objBote.ini = function() {
 objBote.preExamine = function() {
      let toret = objBote.desc;
 
-     if ( objBote.devVecesExaminado() > 2 ) {
+     if ( objBote.devVecesExaminado() > 1 ) {
           toret = actions.execute( "search", "bote" );
      } else {
           toret += " Vas encontrando cosas nuevas, que descartas por in&uacute;tiles.";
@@ -251,8 +251,8 @@ locAntesala.ini = function() {
 };
 
 locAntesala.preExit = function() {
-	ctrl.goto( locPlaya );
-	return "";
+    ctrl.goto( locPlaya );
+    return "";
 }
 
 const objEstalactitas = ctrl.creaObj( "estalactitas",
@@ -326,17 +326,17 @@ objRocaPlana.preOpen = function() {
      if ( llave === null ) {
           toret = "No se puede abrir sin una llave...";
      } else {
-			if ( locPasaje.devSalida( "sur" ) === null ) {
-			  locPasaje.ponSalidaBi( "sur", locSalaTesoro );
-			  objRocaPlana.desc = "Descansa, desplazada, contra la pared sur.";
-			  objRocaPlana.ponAbierto();
-			  toret = "Con mano temblorosa, abres la puerta \
-					   introduciendo la llave en la abertura.";
-			  acciones.ejecuta( "look" );
-			} else {
-				toret = "La puerta descansa desplazada. \
-						 Un pasaje se vislumbra al ${sur, sur}";
-			}
+            if ( locPasaje.devSalida( "sur" ) === null ) {
+              locPasaje.ponSalidaBi( "sur", locSalaTesoro );
+              objRocaPlana.desc = "Descansa, desplazada, contra la pared sur.";
+              objRocaPlana.ponAbierto();
+              toret = "Con mano temblorosa, abres la puerta \
+                       introduciendo la llave en la abertura.";
+              acciones.ejecuta( "look" );
+            } else {
+                toret = "La puerta descansa desplazada. \
+                         Un pasaje se vislumbra al ${sur, sur}";
+            }
 
      }
 
@@ -609,7 +609,7 @@ objBufanda.ini = function() {
 
 // Nuevas acciones -----------------------------------------------------
 const rezaAccion = actions.crea( "reza",
-	[ "reza", "rezar", "rezo" ]
+    [ "reza", "rezar", "rezo" ]
 );
 
 rezaAccion.doIt = function(s) {
