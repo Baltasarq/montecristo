@@ -4,151 +4,186 @@
 const locPlaya = ctrl.lugares.creaLoc( "Costa de Montecristo",
                     [ "playa", "cala", "caleta" ],
                     "En la costa, el mar lame los ${guijarros, ex guijarros}. \
-                    ${Escarpados peñascos,ex rocas} escalan las cimas con desniveles \
-                    imposibles, y contin&uacute;an \
-                    al ${este,este} en forma de ${cantiles, ex cantiles}. \
-                    Puedes ver tambi&eacute;n el ${bote, ex bote} en el \
-                    que llegaste."
+                     ${Escarpados peñascos,ex rocas} \
+                     escalan las cimas con desniveles \
+                     imposibles, y contin&uacute;an \
+                     al ${este,este} en forma de ${cantiles, ex cantiles}.",
+                    function() {
+                        this.pic = "res/playaGuijarros.jpg";
+                        this.modificaDesc = function() {
+                            this.desc += "</p><p>Al ${sur,sur}, \
+                                          la entrada de \
+                                          la ${cueva, ex cueva} se \
+                                          encuentra excavada \
+                                          en la roca.</p>";
+                            };
+                        this.preExamine = function() {
+                            let toret = this.desc;
+
+                            if ( this.has( objBote ) ) {
+                                toret += " Puedes ver tambi&eacute;n \
+                                          el ${bote, ex bote} en el \
+                                          que llegaste."
+                            }
+
+                            return toret;
+                        };
+
+                        this.preEnter = function() {
+                            ctrl.goto( locAntesala );
+                            return "";
+                        };
+
+                        this.preSwim = function() {
+                            return "Acabas de llegar, \
+                                    para buscar el tesoro de Montecristo. \
+                                    No es el momento de nadar.";
+                        }
+
+                        this.creaScenery( "guijarros",
+                            [ "guijarro", "piedras", "piedra" ],
+                            "Pequeños guijarros se ven arrastrados \
+                             por la fuerza del agua." );
+
+                        const objCueva = ctrl.creaObj( "cueva",
+                            [ "gruta", "caverna" ],
+                            "Parece una invitación a \
+                             adentrarse en la oscuridad.",
+                            locPlaya, Ent.Escenario,
+                            function() {
+                                this.preEnter = function() {
+                                    ctrl.goto( locAntesala );
+                                    return "Te has adentrado en la cueva...";
+                                }
+                            }
+                        );
+                    }
 );
-
-locPlaya.ini = function() {
-    this.pic = "res/playaGuijarros.jpg";
-    this.modificaDesc = function() {
-        this.desc += " Al ${sur,sur}, la entrada de la ${cueva, ex cueva} se \
-                      encuentra excavada en la roca.";
-    };
-};
-
-locPlaya.preEnter = function() {
-    ctrl.goto( locAntesala );
-    return "";
-};
-
-locPlaya.preSwim = function() {
-    return "Acabas de llegar, para buscar el tesoro de Montecristo. \
-            No es el momento de nadar.";
-}
-
-const objGuijarros = ctrl.creaObj( "guijarros",
-     [ "guijarro", "piedras", "piedra" ],
-     "Pequeños guijarros se ven arrastrados por la fuerza del agua.",
-     locPlaya, Ent.Escenario
-);
-
-const objMar = ctrl.creaObj( "mar",
-     [ "agua" ],
-     "El mar bate la costa con fuerza.",
-     locPlaya, Ent.Escenario
-);
-
-const objCueva = ctrl.creaObj( "cueva",
-     [ "gruta", "caverna" ],
-     "Parece una invitación a adentrarse en la oscuridad.",
-     locPlaya, Ent.Escenario
-);
-
-objCueva.preEnter = function() {
-     ctrl.goto( locAntesala );
-     return "Te has adentrado en la cueva...";
-}
-
-const objRocas = ctrl.creaObj( "roca",
-     [ "rocas", "peñascos", "peñasco", "cantiles",
-          "acantilados", "cantil", "acantilado", "cima", "cimas" ],
-     "Las rocas alcanzan alturas imposibles.",
-     locPlaya, Ent.Escenario
-);
-
-objRocas.ini = function() {
-    this.ponAlcanzable( false );    
-};
-
-const objBotella = ctrl.creaObj( "botella",
-     [ "agua", "recipiente" ],
-     "Una botella llena de agua.",
-     ctrl.lugares.limbo, Ent.Portable
-);
-
-objBotella.preExamine = function() {
-    let toret = this.desc;
-    
-    if ( ctrl.places.getCurrentLoc().has( pnjNaufrago ) ) {
-        toret += " El náufrago la \
-                   ${necesita más que tú, dar botella a naufrago}.";
-    }
-    
-    return toret;
-};
 
 const objBotellaVacia = ctrl.creaObj( "botella",
-     [ "recipiente" ],
-     "Una botella vacía.",
-     ctrl.lugares.limbo, Ent.Portable
+    [ "recipiente" ],
+    "Una botella vacía.",
+    ctrl.lugares.limbo, Ent.Portable
 );
-
-objBotella.preGive = function() {
-     const dropAction = acciones.devAccion( "drop" );
-     let toret = "";
-
-     if ( parser.sentencia.obj2 == pnjNaufrago ) {
-        ctrl.print( "Le das la botella al n&aacute;ufrago, quien la apura \
-                 de un solo trago." );
-
-        this.moveTo( ctrl.lugares.limbo );
-        objBotellaVacia.moveTo( pnjNaufrago );
-        pnjNaufrago.status = 2;
-
-        pnjNaufrago.di( "Gracias... gracias, mi buen amigo." );
-        ctrl.print( "Goterones de agua resbalan por sus luengas barbas..." );
-
-        pnjNaufrago.di( "Mi nombre es Valerio. Naufragué aquí hace un mes, \
-                      y ya había perdido toda esperanza." );
-        pnjNaufrago.desc = "Saborea las gotas que le han quedado \
-                            en las comisuras de los labios... y hay \
-                            una expresión de alivio en sus ojos...";
-        pnjNaufrago.syn.push( "valerio" );
-        toret = "Quiz&aacute;s ahora, que ya est&aacute; tranquilo, \
-                   sea un buen momento para hacerle unas preguntas.";
-    } else {
-          toret = dropAction.exe( parser.sentencia );
-    }
-
-    return toret;
-}
 
 const objBote = ctrl.creaObj( "bote",
-     [ "barca", "esquife" ],
-     "La embarcación en la que arribaste a Montecristo, varada en \
-      la playa. En su interior hay multitud de objetos de distinto tipo, \
-      especialmente material de marinería.",
-     locPlaya, Ent.Escenario
+    [ "barca", "esquife" ],
+    "La embarcación en la que arribaste a Montecristo, \
+     varada en la playa. En su interior hay \
+     multitud de objetos de distinto tipo, \
+     especialmente material de marinería.",
+    locPlaya, Ent.Escenario,
+    function() {
+        this.ponContenedor();
+        this.preExamine = function() {
+            let toret = objBote.desc;
+
+            if ( objBote.devVecesExaminado() > 1 ) {
+                  toret = actions.execute( "search", "bote" );
+            } else {
+                  toret += " Vas encontrando \
+                            cosas nuevas, \
+                            que descartas por \
+                            in&uacute;tiles.";
+            }
+
+            return toret;
+        }
+
+        this.preSearch = function() {
+             if ( objBotella.owner === ctrl.lugares.limbo ) {
+                  objBotella.mueveA(
+                        ctrl.personas.devJugador() );
+                  return "Del ${bote,ex bote}, \
+                          has recogido una \
+                          ${botella con agua, \
+                          ex botella}.";
+             }
+
+             return "No encuentras nada m&aacute;s.";
+        }
+    }
 );
 
-objBote.ini = function() {
-    this.ponContenedor();
-};
+const objBotella = ctrl.creaObj( "botella",
+        [ "agua", "recipiente" ],
+        "Una botella llena de agua.",
+        ctrl.lugares.limbo, Ent.Portable,
+        function() {
+            this.preExamine = function() {
+                const LOC = ctrl.places.getCurrentLoc();
+                let toret = this.desc;
+        
+                if ( LOC.tiene( pnjNaufrago ) ) {
+                    toret += " El náufrago la \
+                              ${necesita más que tú, \
+                              dar botella a naufrago}.";
+                }
+                
+                return toret;
+            };
 
-objBote.preExamine = function() {
-     let toret = objBote.desc;
+            this.preGive = function() {
+                const dropAction =
+                        acciones.devAccion( "drop" );
+                let toret = "";
 
-     if ( objBote.devVecesExaminado() > 1 ) {
-          toret = actions.execute( "search", "bote" );
-     } else {
-          toret += " Vas encontrando cosas nuevas, que descartas por in&uacute;tiles.";
-     }
+                if ( parser.sentencia.obj2 == pnjNaufrago ) {
+                    ctrl.print( "Le das la botella al \
+                                 n&aacute;ufrago, \
+                                 quien la apura \
+                                 de un solo trago." );
 
-     return toret;
-}
+                    this.moveTo( ctrl.lugares.limbo );
+                    objBotellaVacia.moveTo( pnjNaufrago );
+                    pnjNaufrago.status = 2;
 
-objBote.preSearch = function() {
-     if ( objBotella.owner === ctrl.lugares.limbo ) {
-          objBotella.mueveA( ctrl.personas.devJugador() );
-          return "Del ${bote,ex bote}, has recogido una \
-                  ${botella con agua,ex botella}.";
-     }
+                    pnjNaufrago.di( "Gracias... gracias, \
+                                     mi buen amigo." );
+                    ctrl.print( "Goterones de agua \
+                                 resbalan por sus luengas \
+                                 barbas..." );
 
-     return "No encuentras nada m&aacute;s.";
-}
+                    pnjNaufrago.di( "Mi nombre es Valerio. \
+                                     Naufragué aquí \
+                                     hace un mes, y ya \
+                                     había perdido toda \
+                                     esperanza." );
+                    pnjNaufrago.desc = "Saborea las gotas \
+                                    que le han quedado \
+                                    en las comisuras de \
+                                    los labios... y hay \
+                                    una expresión de \
+                                    alivio en sus ojos...";
+                    pnjNaufrago.syn.push( "valerio" );
+                    toret = "Quiz&aacute;s ahora, que ya \
+                                    est&aacute; tranquilo, \
+                                    sea un buen momento \
+                                    para hacerle \
+                                    unas preguntas.";
+                } else {
+                      toret = dropAction.exe( parser.sentencia );
+                }
+
+                return toret;
+            }
+        }
+);
+
+const objRocas = ctrl.creaObj( "roca",
+                    [ "rocas", "peñascos", "peñasco", "cantiles",
+                      "acantilados", "cantil", "acantilado",
+                      "cima", "cimas" ],
+                    "Las rocas alcanzan alturas imposibles.",
+                    locPlaya, Ent.Escenario,
+                    function() {
+                        this.ponAlcanzable( false );    
+                    }
+);
+
+const objMar = ctrl.creaObj( "mar", [ "agua" ],
+                    "El mar bate la costa con fuerza.",
+                    locPlaya, Ent.Escenario );
 
 
 // === Cantiles ------------------------------------------------------
@@ -176,52 +211,65 @@ const objPlaya = ctrl.creaObj( "playa", [ "playa", "cala", "caleta" ],
 const pnjNaufrago = ctrl.personas.creaPersona( "naufrago",
                     [ "hombre", "persona", "marino" ],
                     "Tiene pinta de llevar mucho tiempo aqu&iacute;.",
-                    locCantiles
+                    locCantiles,
+                    function() {
+                        this.status = 0;
+                        this.preTalk = function() {
+                            const jugador = ctrl.personas.devJugador();
+                            let toret = "";
+
+                             if ( this.status == 0 ) {
+                                  this.di( "Oh..." );
+                                  ctrl.print( "Parece débil, \
+                                               y está claramente \
+                                               deshidratado." );
+                                  jugador.di( "Oiga, oiga... \
+                                               me llamo Edmundo..." );
+                                  this.di( "Agua..." );
+                                  toret = "El hombre se desvanece.";
+                                  ++this.status;
+                             }
+                             else
+                             if ( this.status == 1 ) {
+                                  ctrl.print( "Espabilas al hombre, \
+                                               con unas palmadas \
+                                               en la cara." );
+                                  this.di( "Agua..." );
+                                  toret = "No parece haber mucho \
+                                           más que hacer...";
+                             }
+                             else
+                             if ( this.status == 2 ) {
+                                  this.di( "Necesito un bote para \
+                                            volver a la civilización." );
+                                  jugador.di( "Valerio, puedes tomar el mío, \
+                                               en la playa cerca \
+                                               de aquí. Por todo pago, \
+                                               sólo te pido que me ayudes \
+                                               a encontrar la cueva \
+                                               en las entrañas de esta isla. \
+                                               Y también... \
+                                               que vuelvas a buscarme \
+                                               dentro de dos días." );
+                                  this.di( "Oh, s&iacute;... \
+                                            Está al sur de la playa... \
+                                            no tiene pérdida." );
+                                  ctrl.print( "Valerio corre hacia el bote, \
+                                               y lo empuja en el agua." );
+                                  this.di( "¡Volveré!" );
+                                  toret = "El hombre rema mar adentro...";
+                                  locPlaya.modificaDesc();
+                                  locAntesala.ponSalidaBi( "norte", locPlaya );
+                                  objBote.moveTo( ctrl.lugares.limbo );
+                                  this.moveTo( ctrl.lugares.limbo );
+                                  ctrl.lugares.updateDesc();
+                             }
+
+                             return toret;
+                        }
+                    }
 );
 
-pnjNaufrago.ini = function() {
-    this.status = 0;
-};
-
-pnjNaufrago.preTalk = function() {
-     const jugador = ctrl.personas.devJugador();
-     let toret = "";
-
-     if ( this.status == 0 ) {
-          this.di( "Oh..." );
-          ctrl.print( "Parece débil, y está claramente deshidratado." );
-          jugador.di( "Oiga, oiga... me llamo Edmundo..." );
-          this.di( "Agua..." );
-          toret = "El hombre se desvanece.";
-          ++this.status;
-     }
-     else
-     if ( this.status == 1 ) {
-          ctrl.print( "Espabilas al hombre, con unas palmadas en la cara." );
-          this.di( "Agua..." );
-          toret = "No parece haber mucho más que hacer...";
-     }
-     else
-     if ( this.status == 2 ) {
-          this.di( "Necesito un bote para volver a la civilización." );
-          jugador.di( "Valerio, puedes tomar el mío, en la playa cerca \
-                       de aquí. Por todo pago, sólo te pido que me ayudes \
-                       a encontrar la cueva en las entrañas de esta isla. \
-                       Y también... que vuelvas a buscarme dentro de dos \
-                       días." );
-          this.di( "Oh, s&iacute;... Está al sur de la playa... no tiene pérdida." );
-          ctrl.print( "Valerio corre hacia el bote, y lo empuja en el agua." );
-          this.di( "¡Volveré!" );
-          toret = "El hombre rema mar adentro...";
-          locPlaya.modificaDesc();
-          locAntesala.ponSalidaBi( "norte", locPlaya );
-          objBote.moveTo( ctrl.lugares.limbo );
-          this.moveTo( ctrl.lugares.limbo );
-          ctrl.lugares.updateDesc();
-     }
-
-     return toret;
-}
 
 // === Oscura cueva --------------------------------------------------
 const locCueva = ctrl.lugares.creaLoc( "Cueva oscura",
@@ -597,14 +645,14 @@ const jugador = ctrl.personas.creaPersona( "Edmundo Dant&eacute;s",
 );
 
 objBufanda = ctrl.creaObj( "bufanda",
-                              [ "bufanda", "fular", "foulard" ],
-                              "Una gruesa bufanda de marinero.",
-                              jugador
+                    [ "bufanda", "fular", "foulard" ],
+                    "Una gruesa bufanda de marinero.",
+                    jugador,
+                    Ent.Portable,
+                    function() {
+                        this.ponPuesto();
+                    }
 );
-
-objBufanda.ini = function() {
-    this.ponPuesto();
-};
 
 
 // Nuevas acciones -----------------------------------------------------
@@ -625,8 +673,8 @@ rezaAccion.doIt = function(s) {
 ctrl.ini = function() {
     ctrl.ponTitulo( "La isla de Montecristo" );
     ctrl.ponIntro( "Despu&eacute;s de huir del castillo de <b>If</b>, \
-                    arribas a la <i>Isla \
-                    de Montecristo</i>, para tratar de encontrar el tesoro del que \
+                    arribas a la <i>Isla de Montecristo</i>, \
+                    para tratar de encontrar el tesoro del que \
                     el abate te confes&oacute; su existencia y paradero."
     );
     ctrl.ponImg( "res/islaMontecristo.jpg" );
